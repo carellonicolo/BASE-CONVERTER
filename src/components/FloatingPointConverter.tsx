@@ -1,0 +1,409 @@
+import { useState, useEffect } from 'react';
+import { Info, Copy, Check } from 'lucide-react';
+
+function FloatingPointConverter() {
+  const [decimalInput, setDecimalInput] = useState('');
+  const [binaryInput, setBinaryInput] = useState('');
+  const [fixedPointBits, setFixedPointBits] = useState(8);
+  const [floatFormat, setFloatFormat] = useState<'float32' | 'float64'>('float32');
+  const [copiedField, setCopiedField] = useState<string | null>(null);
+
+  const [floatingPointResult, setFloatingPointResult] = useState<{
+    sign: string;
+    exponent: string;
+    mantissa: string;
+    binary: string;
+    hex: string;
+  } | null>(null);
+
+  const [fixedPointResult, setFixedPointResult] = useState<{
+    binary: string;
+    hex: string;
+    decimal: string;
+  } | null>(null);
+
+  useEffect(() => {
+    if (!decimalInput.trim()) {
+      setFloatingPointResult(null);
+      setFixedPointResult(null);
+      return;
+    }
+
+    const value = parseFloat(decimalInput);
+    if (isNaN(value)) {
+      setFloatingPointResult(null);
+      setFixedPointResult(null);
+      return;
+    }
+
+    const floatResult = convertToFloatingPoint(value, floatFormat);
+    setFloatingPointResult(floatResult);
+
+    const fixedResult = convertToFixedPoint(value, fixedPointBits);
+    setFixedPointResult(fixedResult);
+  }, [decimalInput, floatFormat, fixedPointBits]);
+
+  const convertToFloatingPoint = (
+    value: number,
+    format: 'float32' | 'float64'
+  ): {
+    sign: string;
+    exponent: string;
+    mantissa: string;
+    binary: string;
+    hex: string;
+  } => {
+    const buffer =
+      format === 'float32' ? new ArrayBuffer(4) : new ArrayBuffer(8);
+    const view = new DataView(buffer);
+
+    if (format === 'float32') {
+      view.setFloat32(0, value, false);
+    } else {
+      view.setFloat64(0, value, false);
+    }
+
+    let binary = '';
+    const bytes = format === 'float32' ? 4 : 8;
+    for (let i = 0; i < bytes; i++) {
+      const byte = view.getUint8(i);
+      binary += byte.toString(2).padStart(8, '0');
+    }
+
+    const sign = binary[0];
+    const exponentBits = format === 'float32' ? 8 : 11;
+    const mantissaBits = format === 'float32' ? 23 : 52;
+
+    const exponent = binary.substring(1, 1 + exponentBits);
+    const mantissa = binary.substring(1 + exponentBits, 1 + exponentBits + mantissaBits);
+
+    let hex = '';
+    for (let i = 0; i < bytes; i++) {
+      hex += view.getUint8(i).toString(16).toUpperCase().padStart(2, '0');
+    }
+
+    return { sign, exponent, mantissa, binary, hex };
+  };
+
+  const convertToFixedPoint = (
+    value: number,
+    fractionalBits: number
+  ): {
+    binary: string;
+    hex: string;
+    decimal: string;
+  } => {
+    const scaleFactor = Math.pow(2, fractionalBits);
+    const fixedValue = Math.round(value * scaleFactor);
+
+    const binary = (fixedValue >>> 0).toString(2).padStart(32, '0');
+    const hex = '0x' + (fixedValue >>> 0).toString(16).toUpperCase().padStart(8, '0');
+
+    return {
+      binary,
+      hex,
+      decimal: fixedValue.toString(),
+    };
+  };
+
+  const binaryToDecimal = (binary: string, format: 'float32' | 'float64'): number => {
+    const cleanBinary = binary.replace(/\s/g, '');
+    const expectedLength = format === 'float32' ? 32 : 64;
+
+    if (cleanBinary.length !== expectedLength) {
+      return NaN;
+    }
+
+    const bytes = format === 'float32' ? 4 : 8;
+    const buffer = new ArrayBuffer(bytes);
+    const view = new DataView(buffer);
+
+    for (let i = 0; i < bytes; i++) {
+      const byte = cleanBinary.substring(i * 8, (i + 1) * 8);
+      view.setUint8(i, parseInt(byte, 2));
+    }
+
+    return format === 'float32' ? view.getFloat32(0, false) : view.getFloat64(0, false);
+  };
+
+  const handleBinaryConvert = () => {
+    const value = binaryToDecimal(binaryInput, floatFormat);
+    if (!isNaN(value)) {
+      setDecimalInput(value.toString());
+    }
+  };
+
+  const copyToClipboard = async (text: string, field: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopiedField(field);
+      setTimeout(() => setCopiedField(null), 2000);
+    } catch (err) {
+      console.error('Errore copia:', err);
+    }
+  };
+
+  const formatBinaryWithSpaces = (binary: string, chunkSize: number): string => {
+    const chunks = [];
+    for (let i = 0; i < binary.length; i += chunkSize) {
+      chunks.push(binary.substring(i, i + chunkSize));
+    }
+    return chunks.join(' ');
+  };
+
+  return (
+    <div className="space-y-8">
+      <div className="grid md:grid-cols-2 gap-6">
+        <div>
+          <label className="block text-sm font-semibold text-slate-300 mb-2">
+            Numero Decimale
+          </label>
+          <input
+            type="text"
+            value={decimalInput}
+            onChange={(e) => setDecimalInput(e.target.value)}
+            placeholder="Es. 3.14159, -42.5, 0.125"
+            className="w-full px-4 py-3 bg-slate-900/50 border border-slate-600 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-transparent transition-all"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-semibold text-slate-300 mb-2">
+            Formato Virgola Mobile
+          </label>
+          <select
+            value={floatFormat}
+            onChange={(e) => setFloatFormat(e.target.value as 'float32' | 'float64')}
+            className="w-full px-4 py-3 bg-slate-900/50 border border-slate-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-transparent transition-all"
+          >
+            <option value="float32">Float 32-bit (IEEE 754 Single)</option>
+            <option value="float64">Float 64-bit (IEEE 754 Double)</option>
+          </select>
+        </div>
+      </div>
+
+      {floatingPointResult && (
+        <div className="space-y-6">
+          <div>
+            <h3 className="text-xl font-semibold text-white mb-4">Virgola Mobile IEEE 754</h3>
+
+            <div className="bg-slate-900/50 border border-slate-600 rounded-lg p-6 space-y-4">
+              <div className="grid grid-cols-3 gap-4">
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <h4 className="text-xs font-semibold text-cyan-400">SEGNO (1 bit)</h4>
+                  </div>
+                  <div className="bg-slate-800 rounded p-3 text-center">
+                    <span className="text-2xl font-mono text-white">
+                      {floatingPointResult.sign}
+                    </span>
+                    <p className="text-xs text-slate-400 mt-1">
+                      {floatingPointResult.sign === '0' ? 'Positivo' : 'Negativo'}
+                    </p>
+                  </div>
+                </div>
+
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <h4 className="text-xs font-semibold text-cyan-400">
+                      ESPONENTE ({floatFormat === 'float32' ? '8' : '11'} bit)
+                    </h4>
+                  </div>
+                  <div className="bg-slate-800 rounded p-3 text-center">
+                    <span className="text-lg font-mono text-white break-all">
+                      {floatingPointResult.exponent}
+                    </span>
+                    <p className="text-xs text-slate-400 mt-1">
+                      Dec: {parseInt(floatingPointResult.exponent, 2)}
+                    </p>
+                  </div>
+                </div>
+
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <h4 className="text-xs font-semibold text-cyan-400">
+                      MANTISSA ({floatFormat === 'float32' ? '23' : '52'} bit)
+                    </h4>
+                  </div>
+                  <div className="bg-slate-800 rounded p-3">
+                    <span className="text-xs font-mono text-white break-all">
+                      {formatBinaryWithSpaces(floatingPointResult.mantissa, 8)}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="border-t border-slate-700 pt-4 space-y-3">
+                <div className="flex items-center justify-between">
+                  <h4 className="text-sm font-semibold text-cyan-400">Binario Completo</h4>
+                  <button
+                    onClick={() => copyToClipboard(floatingPointResult.binary, 'binary')}
+                    className="p-2 hover:bg-slate-700 rounded-lg transition-all"
+                    title="Copia"
+                  >
+                    {copiedField === 'binary' ? (
+                      <Check className="w-4 h-4 text-green-400" />
+                    ) : (
+                      <Copy className="w-4 h-4 text-slate-400 hover:text-white" />
+                    )}
+                  </button>
+                </div>
+                <p className="text-sm font-mono text-white break-all bg-slate-800 p-3 rounded">
+                  {formatBinaryWithSpaces(floatingPointResult.binary, 8)}
+                </p>
+              </div>
+
+              <div className="flex items-center justify-between">
+                <h4 className="text-sm font-semibold text-cyan-400">Esadecimale</h4>
+                <button
+                  onClick={() => copyToClipboard(floatingPointResult.hex, 'hex')}
+                  className="p-2 hover:bg-slate-700 rounded-lg transition-all"
+                  title="Copia"
+                >
+                  {copiedField === 'hex' ? (
+                    <Check className="w-4 h-4 text-green-400" />
+                  ) : (
+                    <Copy className="w-4 h-4 text-slate-400 hover:text-white" />
+                  )}
+                </button>
+              </div>
+              <p className="text-xl font-mono text-white bg-slate-800 p-3 rounded">
+                0x{floatingPointResult.hex}
+              </p>
+            </div>
+          </div>
+
+          {fixedPointResult && (
+            <div>
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-xl font-semibold text-white">Virgola Fissa (Q24.{fixedPointBits})</h3>
+                <div className="flex items-center gap-2">
+                  <label className="text-sm text-slate-300">Bit Frazionari:</label>
+                  <input
+                    type="number"
+                    min="0"
+                    max="31"
+                    value={fixedPointBits}
+                    onChange={(e) => setFixedPointBits(parseInt(e.target.value) || 8)}
+                    className="w-20 px-3 py-1 bg-slate-900/50 border border-slate-600 rounded text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-400"
+                  />
+                </div>
+              </div>
+
+              <div className="bg-slate-900/50 border border-slate-600 rounded-lg p-6 space-y-4">
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <h4 className="text-sm font-semibold text-cyan-400">Binario (32-bit)</h4>
+                    <button
+                      onClick={() => copyToClipboard(fixedPointResult.binary, 'fixed-binary')}
+                      className="p-2 hover:bg-slate-700 rounded-lg transition-all"
+                      title="Copia"
+                    >
+                      {copiedField === 'fixed-binary' ? (
+                        <Check className="w-4 h-4 text-green-400" />
+                      ) : (
+                        <Copy className="w-4 h-4 text-slate-400 hover:text-white" />
+                      )}
+                    </button>
+                  </div>
+                  <p className="text-sm font-mono text-white break-all bg-slate-800 p-3 rounded">
+                    {formatBinaryWithSpaces(fixedPointResult.binary, 8)}
+                  </p>
+                </div>
+
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <h4 className="text-sm font-semibold text-cyan-400">Esadecimale</h4>
+                    <button
+                      onClick={() => copyToClipboard(fixedPointResult.hex, 'fixed-hex')}
+                      className="p-2 hover:bg-slate-700 rounded-lg transition-all"
+                      title="Copia"
+                    >
+                      {copiedField === 'fixed-hex' ? (
+                        <Check className="w-4 h-4 text-green-400" />
+                      ) : (
+                        <Copy className="w-4 h-4 text-slate-400 hover:text-white" />
+                      )}
+                    </button>
+                  </div>
+                  <p className="text-xl font-mono text-white bg-slate-800 p-3 rounded">
+                    {fixedPointResult.hex}
+                  </p>
+                </div>
+
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <h4 className="text-sm font-semibold text-cyan-400">Valore Intero Scalato</h4>
+                    <button
+                      onClick={() => copyToClipboard(fixedPointResult.decimal, 'fixed-decimal')}
+                      className="p-2 hover:bg-slate-700 rounded-lg transition-all"
+                      title="Copia"
+                    >
+                      {copiedField === 'fixed-decimal' ? (
+                        <Check className="w-4 h-4 text-green-400" />
+                      ) : (
+                        <Copy className="w-4 h-4 text-slate-400 hover:text-white" />
+                      )}
+                    </button>
+                  </div>
+                  <p className="text-xl font-mono text-white bg-slate-800 p-3 rounded">
+                    {fixedPointResult.decimal}
+                  </p>
+                  <p className="text-xs text-slate-400 mt-2">
+                    Moltiplicato per 2^{fixedPointBits} = {Math.pow(2, fixedPointBits)}
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      <div className="border-t border-slate-700 pt-6">
+        <h3 className="text-lg font-semibold text-white mb-4">
+          Converti da Binario a Decimale
+        </h3>
+        <div className="grid md:grid-cols-3 gap-4">
+          <div className="md:col-span-2">
+            <input
+              type="text"
+              value={binaryInput}
+              onChange={(e) => setBinaryInput(e.target.value)}
+              placeholder={`Inserisci ${floatFormat === 'float32' ? '32' : '64'} bit binari...`}
+              className="w-full px-4 py-3 bg-slate-900/50 border border-slate-600 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-transparent transition-all font-mono"
+            />
+          </div>
+          <button
+            onClick={handleBinaryConvert}
+            className="px-6 py-3 bg-cyan-500 hover:bg-cyan-600 text-white font-semibold rounded-lg transition-all"
+          >
+            Converti
+          </button>
+        </div>
+      </div>
+
+      <div className="bg-slate-900/30 border border-slate-700 rounded-lg p-4">
+        <div className="flex items-start gap-3">
+          <Info className="w-5 h-5 text-cyan-400 flex-shrink-0 mt-0.5" />
+          <div className="space-y-2 text-sm text-slate-300">
+            <p className="font-semibold">Note:</p>
+            <ul className="list-disc list-inside space-y-1 text-slate-400">
+              <li>IEEE 754 Float32: 1 bit segno, 8 bit esponente, 23 bit mantissa</li>
+              <li>IEEE 754 Float64: 1 bit segno, 11 bit esponente, 52 bit mantissa</li>
+              <li>Virgola Fissa: rappresenta numeri con un punto decimale fisso usando interi scalati</li>
+              <li>Q24.8 significa 24 bit per la parte intera e 8 bit per la parte frazionaria</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      {!decimalInput && (
+        <div className="text-center py-12 text-slate-400">
+          <p>Inserisci un numero decimale per vedere le conversioni</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+export default FloatingPointConverter;
