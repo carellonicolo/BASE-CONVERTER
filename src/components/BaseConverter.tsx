@@ -81,7 +81,7 @@ function BaseConverter() {
     <div className="space-y-8">
       <div className="grid md:grid-cols-2 gap-6">
         <div>
-          <label className="block text-sm font-semibold text-slate-300 mb-2">
+          <label className="block text-sm font-semibold text-slate-200 mb-3 tracking-wide">
             Valore da Convertire
           </label>
           <input
@@ -89,18 +89,18 @@ function BaseConverter() {
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             placeholder="Inserisci un numero..."
-            className="w-full px-4 py-3 bg-slate-900/50 border border-slate-600 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-transparent transition-all"
+            className="liquid-input w-full text-white placeholder-slate-400"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-slate-300 mb-2">
+          <label className="block text-sm font-semibold text-slate-200 mb-3 tracking-wide">
             Base di Input
           </label>
           <select
             value={inputBase}
             onChange={(e) => setInputBase(parseInt(e.target.value))}
-            className="w-full px-4 py-3 bg-slate-900/50 border border-slate-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-transparent transition-all"
+            className="liquid-input w-full text-white appearance-none cursor-pointer"
           >
             <option value={2}>Binario (Base 2)</option>
             <option value={8}>Ottale (Base 8)</option>
@@ -113,7 +113,7 @@ function BaseConverter() {
       </div>
 
       <div>
-        <label className="block text-sm font-semibold text-slate-300 mb-2">
+        <label className="block text-sm font-semibold text-slate-200 mb-3 tracking-wide">
           Base Personalizzata (2-36) - Opzionale
         </label>
         <input
@@ -123,52 +123,55 @@ function BaseConverter() {
           value={customBase}
           onChange={(e) => setCustomBase(e.target.value)}
           placeholder="Es. 7, 12, 24..."
-          className="w-full px-4 py-3 bg-slate-900/50 border border-slate-600 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-transparent transition-all"
+          className="liquid-input w-full text-white placeholder-slate-400"
         />
       </div>
 
       {error && (
-        <div className="bg-red-500/10 border border-red-500/50 rounded-lg p-4">
-          <p className="text-red-400 text-sm">{error}</p>
+        <div className="glass-morphism border-red-400/30 rounded-2xl p-4 bg-red-500/10">
+          <p className="text-red-300 text-sm font-medium">{error}</p>
         </div>
       )}
 
       {results.length > 0 && (
         <div>
-          <div className="flex items-center gap-2 mb-4">
-            <ArrowRight className="w-5 h-5 text-cyan-400" />
-            <h3 className="text-xl font-semibold text-white">Risultati</h3>
+          <div className="flex items-center gap-3 mb-6">
+            <div className="relative">
+              <div className="absolute inset-0 bg-liquid-400 blur-lg opacity-40"></div>
+              <ArrowRight className="w-6 h-6 text-liquid-300 relative z-10" />
+            </div>
+            <h3 className="text-2xl font-bold text-white">Risultati</h3>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-4">
+          <div className="grid md:grid-cols-2 gap-5">
             {results.map((result, index) => (
               <div
                 key={index}
-                className="bg-slate-900/50 border border-slate-600 rounded-lg p-5 hover:border-cyan-400/50 transition-all group"
+                className="glass-card specular-highlight p-6 group"
               >
-                <div className="flex items-center justify-between mb-3">
-                  <h4 className="text-sm font-semibold text-cyan-400">{result.label}</h4>
+                <div className="flex items-center justify-between mb-4">
+                  <h4 className="text-sm font-bold text-liquid-300 uppercase tracking-wider">{result.label}</h4>
                   <button
                     onClick={() => copyToClipboard(result.prefix + result.value, index)}
-                    className="p-2 hover:bg-slate-700 rounded-lg transition-all"
+                    className="glass-morphism p-2.5 rounded-xl transition-all duration-300 hover:scale-110 hover:bg-white/10"
                     title="Copia"
                   >
                     {copiedIndex === index ? (
                       <Check className="w-4 h-4 text-green-400" />
                     ) : (
-                      <Copy className="w-4 h-4 text-slate-400 group-hover:text-white" />
+                      <Copy className="w-4 h-4 text-slate-300 group-hover:text-white transition-colors" />
                     )}
                   </button>
                 </div>
-                <div className="flex items-baseline gap-1">
+                <div className="flex items-baseline gap-2">
                   {result.prefix && (
-                    <span className="text-slate-500 text-sm font-mono">{result.prefix}</span>
+                    <span className="text-slate-400 text-sm font-mono">{result.prefix}</span>
                   )}
-                  <p className="text-2xl font-bold text-white font-mono break-all">
+                  <p className="text-3xl font-bold text-white font-mono break-all">
                     {result.value}
                   </p>
                 </div>
-                <p className="text-xs text-slate-400 mt-2">Base {result.base}</p>
+                <p className="text-xs text-slate-400 mt-3 font-medium">Base {result.base}</p>
               </div>
             ))}
           </div>
@@ -176,8 +179,10 @@ function BaseConverter() {
       )}
 
       {!inputValue && (
-        <div className="text-center py-12 text-slate-400">
-          <p>Inserisci un numero per vedere le conversioni</p>
+        <div className="text-center py-16">
+          <div className="glass-morphism rounded-2xl p-8 inline-block">
+            <p className="text-slate-300 text-lg font-light">Inserisci un numero per vedere le conversioni</p>
+          </div>
         </div>
       )}
     </div>

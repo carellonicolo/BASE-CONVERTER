@@ -155,7 +155,7 @@ function FloatingPointConverter() {
     <div className="space-y-8">
       <div className="grid md:grid-cols-2 gap-6">
         <div>
-          <label className="block text-sm font-semibold text-slate-300 mb-2">
+          <label className="block text-sm font-semibold text-slate-200 mb-3 tracking-wide">
             Numero Decimale
           </label>
           <input
@@ -163,18 +163,18 @@ function FloatingPointConverter() {
             value={decimalInput}
             onChange={(e) => setDecimalInput(e.target.value)}
             placeholder="Es. 3.14159, -42.5, 0.125"
-            className="w-full px-4 py-3 bg-slate-900/50 border border-slate-600 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-transparent transition-all"
+            className="liquid-input w-full text-white placeholder-slate-400"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-slate-300 mb-2">
+          <label className="block text-sm font-semibold text-slate-200 mb-3 tracking-wide">
             Formato Virgola Mobile
           </label>
           <select
             value={floatFormat}
             onChange={(e) => setFloatFormat(e.target.value as 'float32' | 'float64')}
-            className="w-full px-4 py-3 bg-slate-900/50 border border-slate-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-transparent transition-all"
+            className="liquid-input w-full text-white cursor-pointer appearance-none"
           >
             <option value="float32">Float 32-bit (IEEE 754 Single)</option>
             <option value="float64">Float 64-bit (IEEE 754 Double)</option>
@@ -185,15 +185,20 @@ function FloatingPointConverter() {
       {floatingPointResult && (
         <div className="space-y-6">
           <div>
-            <h3 className="text-xl font-semibold text-white mb-4">Virgola Mobile IEEE 754</h3>
+            <div className="flex items-center gap-3 mb-6">
+              <div className="relative">
+                <div className="absolute inset-0 bg-liquid-400 blur-lg opacity-40"></div>
+                <h3 className="text-2xl font-bold text-white relative z-10">Virgola Mobile IEEE 754</h3>
+              </div>
+            </div>
 
-            <div className="bg-slate-900/50 border border-slate-600 rounded-lg p-6 space-y-4">
+            <div className="glass-morphism rounded-2xl p-6 space-y-4 glass-reflection">
               <div className="grid grid-cols-3 gap-4">
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <h4 className="text-xs font-semibold text-cyan-400">SEGNO (1 bit)</h4>
+                    <h4 className="text-xs font-bold text-liquid-300 uppercase tracking-wider">SEGNO (1 bit)</h4>
                   </div>
-                  <div className="bg-slate-800 rounded p-3 text-center">
+                  <div className="glass-morphism rounded-xl p-3 text-center bg-white/5">
                     <span className="text-2xl font-mono text-white">
                       {floatingPointResult.sign}
                     </span>
@@ -205,11 +210,11 @@ function FloatingPointConverter() {
 
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <h4 className="text-xs font-semibold text-cyan-400">
+                    <h4 className="text-xs font-bold text-liquid-300 uppercase tracking-wider">
                       ESPONENTE ({floatFormat === 'float32' ? '8' : '11'} bit)
                     </h4>
                   </div>
-                  <div className="bg-slate-800 rounded p-3 text-center">
+                  <div className="glass-morphism rounded-xl p-3 text-center bg-white/5">
                     <span className="text-lg font-mono text-white break-all">
                       {floatingPointResult.exponent}
                     </span>
@@ -221,11 +226,11 @@ function FloatingPointConverter() {
 
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <h4 className="text-xs font-semibold text-cyan-400">
+                    <h4 className="text-xs font-bold text-liquid-300 uppercase tracking-wider">
                       MANTISSA ({floatFormat === 'float32' ? '23' : '52'} bit)
                     </h4>
                   </div>
-                  <div className="bg-slate-800 rounded p-3">
+                  <div className="glass-morphism rounded-xl p-3 bg-white/5">
                     <span className="text-xs font-mono text-white break-all">
                       {formatBinaryWithSpaces(floatingPointResult.mantissa, 8)}
                     </span>
@@ -235,29 +240,29 @@ function FloatingPointConverter() {
 
               <div className="border-t border-slate-700 pt-4 space-y-3">
                 <div className="flex items-center justify-between">
-                  <h4 className="text-sm font-semibold text-cyan-400">Binario Completo</h4>
+                  <h4 className="text-sm font-bold text-liquid-300 uppercase tracking-wider">Binario Completo</h4>
                   <button
                     onClick={() => copyToClipboard(floatingPointResult.binary, 'binary')}
-                    className="p-2 hover:bg-slate-700 rounded-lg transition-all"
+                    className="glass-morphism p-2.5 rounded-xl transition-all duration-300 hover:scale-110 hover:bg-white/10"
                     title="Copia"
                   >
                     {copiedField === 'binary' ? (
                       <Check className="w-4 h-4 text-green-400" />
                     ) : (
-                      <Copy className="w-4 h-4 text-slate-400 hover:text-white" />
+                      <Copy className="w-4 h-4 text-slate-300 hover:text-white" />
                     )}
                   </button>
                 </div>
-                <p className="text-sm font-mono text-white break-all bg-slate-800 p-3 rounded">
+                <p className="text-sm font-mono text-white break-all glass-morphism p-3 rounded-xl bg-white/5">
                   {formatBinaryWithSpaces(floatingPointResult.binary, 8)}
                 </p>
               </div>
 
               <div className="flex items-center justify-between">
-                <h4 className="text-sm font-semibold text-cyan-400">Esadecimale</h4>
+                <h4 className="text-sm font-bold text-liquid-300 uppercase tracking-wider">Esadecimale</h4>
                 <button
                   onClick={() => copyToClipboard(floatingPointResult.hex, 'hex')}
-                  className="p-2 hover:bg-slate-700 rounded-lg transition-all"
+                  className="glass-morphism p-2.5 rounded-xl transition-all duration-300 hover:scale-110 hover:bg-white/10"
                   title="Copia"
                 >
                   {copiedField === 'hex' ? (
@@ -267,7 +272,7 @@ function FloatingPointConverter() {
                   )}
                 </button>
               </div>
-              <p className="text-xl font-mono text-white bg-slate-800 p-3 rounded">
+              <p className="text-xl font-mono text-white glass-morphism p-3 rounded-xl bg-white/5">
                 0x{floatingPointResult.hex}
               </p>
             </div>
@@ -276,7 +281,12 @@ function FloatingPointConverter() {
           {fixedPointResult && (
             <div>
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-xl font-semibold text-white">Virgola Fissa (Q24.{fixedPointBits})</h3>
+                <div className="flex items-center gap-3">
+                  <div className="relative">
+                    <div className="absolute inset-0 bg-liquid-400 blur-lg opacity-40"></div>
+                    <h3 className="text-2xl font-bold text-white relative z-10">Virgola Fissa (Q24.{fixedPointBits})</h3>
+                  </div>
+                </div>
                 <div className="flex items-center gap-2">
                   <label className="text-sm text-slate-300">Bit Frazionari:</label>
                   <input
@@ -285,68 +295,68 @@ function FloatingPointConverter() {
                     max="31"
                     value={fixedPointBits}
                     onChange={(e) => setFixedPointBits(parseInt(e.target.value) || 8)}
-                    className="w-20 px-3 py-1 bg-slate-900/50 border border-slate-600 rounded text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-400"
+                    className="w-20 px-3 py-1.5 glass-morphism text-white text-sm rounded-lg focus:border-liquid-400/50 focus:ring-2 focus:ring-liquid-400/20"
                   />
                 </div>
               </div>
 
-              <div className="bg-slate-900/50 border border-slate-600 rounded-lg p-6 space-y-4">
+              <div className="glass-morphism rounded-2xl p-6 space-y-4 glass-reflection">
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <h4 className="text-sm font-semibold text-cyan-400">Binario (32-bit)</h4>
+                    <h4 className="text-sm font-bold text-liquid-300 uppercase tracking-wider">Binario (32-bit)</h4>
                     <button
                       onClick={() => copyToClipboard(fixedPointResult.binary, 'fixed-binary')}
-                      className="p-2 hover:bg-slate-700 rounded-lg transition-all"
+                      className="glass-morphism p-2.5 rounded-xl transition-all duration-300 hover:scale-110 hover:bg-white/10"
                       title="Copia"
                     >
                       {copiedField === 'fixed-binary' ? (
                         <Check className="w-4 h-4 text-green-400" />
                       ) : (
-                        <Copy className="w-4 h-4 text-slate-400 hover:text-white" />
+                        <Copy className="w-4 h-4 text-slate-300 hover:text-white" />
                       )}
                     </button>
                   </div>
-                  <p className="text-sm font-mono text-white break-all bg-slate-800 p-3 rounded">
+                  <p className="text-sm font-mono text-white break-all glass-morphism p-3 rounded-xl bg-white/5">
                     {formatBinaryWithSpaces(fixedPointResult.binary, 8)}
                   </p>
                 </div>
 
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <h4 className="text-sm font-semibold text-cyan-400">Esadecimale</h4>
+                    <h4 className="text-sm font-bold text-liquid-300 uppercase tracking-wider">Esadecimale</h4>
                     <button
                       onClick={() => copyToClipboard(fixedPointResult.hex, 'fixed-hex')}
-                      className="p-2 hover:bg-slate-700 rounded-lg transition-all"
+                      className="glass-morphism p-2.5 rounded-xl transition-all duration-300 hover:scale-110 hover:bg-white/10"
                       title="Copia"
                     >
                       {copiedField === 'fixed-hex' ? (
                         <Check className="w-4 h-4 text-green-400" />
                       ) : (
-                        <Copy className="w-4 h-4 text-slate-400 hover:text-white" />
+                        <Copy className="w-4 h-4 text-slate-300 hover:text-white" />
                       )}
                     </button>
                   </div>
-                  <p className="text-xl font-mono text-white bg-slate-800 p-3 rounded">
+                  <p className="text-xl font-mono text-white glass-morphism p-3 rounded-xl bg-white/5">
                     {fixedPointResult.hex}
                   </p>
                 </div>
 
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <h4 className="text-sm font-semibold text-cyan-400">Valore Intero Scalato</h4>
+                    <h4 className="text-sm font-bold text-liquid-300 uppercase tracking-wider">Valore Intero Scalato</h4>
                     <button
                       onClick={() => copyToClipboard(fixedPointResult.decimal, 'fixed-decimal')}
-                      className="p-2 hover:bg-slate-700 rounded-lg transition-all"
+                      className="glass-morphism p-2.5 rounded-xl transition-all duration-300 hover:scale-110 hover:bg-white/10"
                       title="Copia"
                     >
                       {copiedField === 'fixed-decimal' ? (
                         <Check className="w-4 h-4 text-green-400" />
                       ) : (
-                        <Copy className="w-4 h-4 text-slate-400 hover:text-white" />
+                        <Copy className="w-4 h-4 text-slate-300 hover:text-white" />
                       )}
                     </button>
                   </div>
-                  <p className="text-xl font-mono text-white bg-slate-800 p-3 rounded">
+                  <p className="text-xl font-mono text-white glass-morphism p-3 rounded-xl bg-white/5">
                     {fixedPointResult.decimal}
                   </p>
                   <p className="text-xs text-slate-400 mt-2">
@@ -360,9 +370,14 @@ function FloatingPointConverter() {
       )}
 
       <div className="border-t border-slate-700 pt-6">
-        <h3 className="text-lg font-semibold text-white mb-4">
-          Converti da Binario a Decimale
-        </h3>
+        <div className="flex items-center gap-3 mb-6">
+          <div className="relative">
+            <div className="absolute inset-0 bg-liquid-400 blur-lg opacity-40"></div>
+            <h3 className="text-2xl font-bold text-white relative z-10">
+              Converti da Binario a Decimale
+            </h3>
+          </div>
+        </div>
         <div className="grid md:grid-cols-3 gap-4">
           <div className="md:col-span-2">
             <input
@@ -370,21 +385,24 @@ function FloatingPointConverter() {
               value={binaryInput}
               onChange={(e) => setBinaryInput(e.target.value)}
               placeholder={`Inserisci ${floatFormat === 'float32' ? '32' : '64'} bit binari...`}
-              className="w-full px-4 py-3 bg-slate-900/50 border border-slate-600 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-transparent transition-all font-mono"
+              className="liquid-input w-full text-white placeholder-slate-400 font-mono"
             />
           </div>
           <button
             onClick={handleBinaryConvert}
-            className="px-6 py-3 bg-cyan-500 hover:bg-cyan-600 text-white font-semibold rounded-lg transition-all"
+            className="liquid-button text-white font-semibold hover:bg-white/10 shadow-liquid"
           >
             Converti
           </button>
         </div>
       </div>
 
-      <div className="bg-slate-900/30 border border-slate-700 rounded-lg p-4">
+      <div className="glass-morphism rounded-2xl p-5">
         <div className="flex items-start gap-3">
-          <Info className="w-5 h-5 text-cyan-400 flex-shrink-0 mt-0.5" />
+          <div className="relative">
+            <div className="absolute inset-0 bg-liquid-400 blur-lg opacity-30"></div>
+            <Info className="w-5 h-5 text-liquid-300 flex-shrink-0 mt-0.5 relative z-10" />
+          </div>
           <div className="space-y-2 text-sm text-slate-300">
             <p className="font-semibold">Note:</p>
             <ul className="list-disc list-inside space-y-1 text-slate-400">
@@ -398,8 +416,10 @@ function FloatingPointConverter() {
       </div>
 
       {!decimalInput && (
-        <div className="text-center py-12 text-slate-400">
-          <p>Inserisci un numero decimale per vedere le conversioni</p>
+        <div className="text-center py-16">
+          <div className="glass-morphism rounded-2xl p-8 inline-block">
+            <p className="text-slate-300 text-lg font-light">Inserisci un numero decimale per vedere le conversioni</p>
+          </div>
         </div>
       )}
     </div>

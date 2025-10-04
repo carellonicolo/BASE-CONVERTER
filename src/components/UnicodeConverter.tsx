@@ -90,7 +90,7 @@ function UnicodeConverter() {
       <div className="grid md:grid-cols-2 gap-8">
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-semibold text-slate-300 mb-2">
+            <label className="block text-sm font-semibold text-slate-200 mb-3 tracking-wide">
               Testo da Convertire in Unicode
             </label>
             <textarea
@@ -98,60 +98,60 @@ function UnicodeConverter() {
               onChange={(e) => setTextInput(e.target.value)}
               placeholder="Inserisci testo o emoji... 👋 🌟 ❤️"
               rows={4}
-              className="w-full px-4 py-3 bg-slate-900/50 border border-slate-600 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-transparent transition-all resize-none"
+              className="liquid-input w-full text-white placeholder-slate-400 resize-none"
             />
           </div>
 
           {textInput && (
             <div className="space-y-4">
-              <div className="bg-slate-900/50 border border-slate-600 rounded-lg p-4">
-                <div className="flex items-center justify-between mb-2">
-                  <h4 className="text-sm font-semibold text-cyan-400">Unicode (U+)</h4>
+              <div className="glass-card specular-highlight p-5">
+                <div className="flex items-center justify-between mb-3">
+                  <h4 className="text-sm font-bold text-liquid-300 uppercase tracking-wider">Unicode (U+)</h4>
                   <button
                     onClick={() => copyToClipboard(unicodeResult, 'unicode')}
-                    className="p-2 hover:bg-slate-700 rounded-lg transition-all"
+                    className="glass-morphism p-2.5 rounded-xl transition-all duration-300 hover:scale-110 hover:bg-white/10"
                     title="Copia"
                   >
                     {copiedField === 'unicode' ? (
                       <Check className="w-4 h-4 text-green-400" />
                     ) : (
-                      <Copy className="w-4 h-4 text-slate-400 hover:text-white" />
+                      <Copy className="w-4 h-4 text-slate-300 hover:text-white" />
                     )}
                   </button>
                 </div>
                 <p className="text-white font-mono text-sm break-all">{unicodeResult}</p>
               </div>
 
-              <div className="bg-slate-900/50 border border-slate-600 rounded-lg p-4">
-                <div className="flex items-center justify-between mb-2">
-                  <h4 className="text-sm font-semibold text-cyan-400">Unicode Decimale</h4>
+              <div className="glass-card specular-highlight p-5">
+                <div className="flex items-center justify-between mb-3">
+                  <h4 className="text-sm font-bold text-liquid-300 uppercase tracking-wider">Unicode Decimale</h4>
                   <button
                     onClick={() => copyToClipboard(unicodeDecimalResult, 'decimal')}
-                    className="p-2 hover:bg-slate-700 rounded-lg transition-all"
+                    className="glass-morphism p-2.5 rounded-xl transition-all duration-300 hover:scale-110 hover:bg-white/10"
                     title="Copia"
                   >
                     {copiedField === 'decimal' ? (
                       <Check className="w-4 h-4 text-green-400" />
                     ) : (
-                      <Copy className="w-4 h-4 text-slate-400 hover:text-white" />
+                      <Copy className="w-4 h-4 text-slate-300 hover:text-white" />
                     )}
                   </button>
                 </div>
                 <p className="text-white font-mono text-sm break-all">{unicodeDecimalResult}</p>
               </div>
 
-              <div className="bg-slate-900/50 border border-slate-600 rounded-lg p-4">
-                <div className="flex items-center justify-between mb-2">
-                  <h4 className="text-sm font-semibold text-cyan-400">Unicode Esadecimale</h4>
+              <div className="glass-card specular-highlight p-5">
+                <div className="flex items-center justify-between mb-3">
+                  <h4 className="text-sm font-bold text-liquid-300 uppercase tracking-wider">Unicode Esadecimale</h4>
                   <button
                     onClick={() => copyToClipboard(unicodeHexResult, 'hex')}
-                    className="p-2 hover:bg-slate-700 rounded-lg transition-all"
+                    className="glass-morphism p-2.5 rounded-xl transition-all duration-300 hover:scale-110 hover:bg-white/10"
                     title="Copia"
                   >
                     {copiedField === 'hex' ? (
                       <Check className="w-4 h-4 text-green-400" />
                     ) : (
-                      <Copy className="w-4 h-4 text-slate-400 hover:text-white" />
+                      <Copy className="w-4 h-4 text-slate-300 hover:text-white" />
                     )}
                   </button>
                 </div>
@@ -163,7 +163,7 @@ function UnicodeConverter() {
 
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-semibold text-slate-300 mb-2">
+            <label className="block text-sm font-semibold text-slate-200 mb-3 tracking-wide">
               Unicode da Convertire in Testo
             </label>
             <textarea
@@ -171,7 +171,7 @@ function UnicodeConverter() {
               onChange={(e) => setUnicodeInput(e.target.value)}
               placeholder="Inserisci codici Unicode... (es. U+0048 U+0065 U+006C U+006C U+006F)"
               rows={4}
-              className="w-full px-4 py-3 bg-slate-900/50 border border-slate-600 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-transparent transition-all resize-none"
+              className="liquid-input w-full text-white placeholder-slate-400 resize-none"
             />
             <p className="text-xs text-slate-400 mt-2">
               Formati supportati: U+0048, 0x48, \u0048, 48
@@ -179,9 +179,9 @@ function UnicodeConverter() {
           </div>
 
           {unicodeInput && (
-            <div className="bg-slate-900/50 border border-slate-600 rounded-lg p-4">
-              <div className="flex items-center justify-between mb-2">
-                <h4 className="text-sm font-semibold text-cyan-400">Testo Risultante</h4>
+            <div className="glass-card specular-highlight p-5">
+              <div className="flex items-center justify-between mb-3">
+                <h4 className="text-sm font-bold text-liquid-300 uppercase tracking-wider">Testo Risultante</h4>
                 <button
                   onClick={() => copyToClipboard(textResult, 'text')}
                   className="p-2 hover:bg-slate-700 rounded-lg transition-all"
@@ -202,9 +202,12 @@ function UnicodeConverter() {
 
       {textInput && (
         <div>
-          <div className="flex items-center gap-2 mb-4">
-            <Sparkles className="w-5 h-5 text-cyan-400" />
-            <h3 className="text-lg font-semibold text-white">Dettagli Caratteri</h3>
+          <div className="flex items-center gap-3 mb-6">
+            <div className="relative">
+              <div className="absolute inset-0 bg-liquid-400 blur-lg opacity-40"></div>
+              <Sparkles className="w-6 h-6 text-liquid-300 relative z-10" />
+            </div>
+            <h3 className="text-2xl font-bold text-white">Dettagli Caratteri</h3>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -213,7 +216,7 @@ function UnicodeConverter() {
               return (
                 <div
                   key={index}
-                  className="bg-slate-900/50 border border-slate-600 rounded-lg p-4 hover:border-cyan-400/50 transition-all"
+                  className="glass-card specular-highlight p-5"
                 >
                   <div className="text-center mb-3">
                     <div className="text-5xl mb-2">{details.char}</div>
@@ -244,8 +247,8 @@ function UnicodeConverter() {
         </div>
       )}
 
-      <div className="bg-slate-900/30 border border-slate-700 rounded-lg p-4">
-        <h4 className="text-sm font-semibold text-slate-300 mb-2">Intervalli Unicode Comuni</h4>
+      <div className="glass-morphism rounded-2xl p-5">
+        <h4 className="text-sm font-bold text-slate-200 mb-3 tracking-wide">Intervalli Unicode Comuni</h4>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs">
           <div className="text-slate-400">
             <span className="font-mono">U+0000-U+007F:</span> ASCII Base
