@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { ArrowRightLeft, Copy, Check } from 'lucide-react';
+import AsciiTable from './AsciiTable';
 
 function AsciiConverter() {
   const [textInput, setTextInput] = useState('');
@@ -176,23 +177,7 @@ function AsciiConverter() {
         </div>
       </div>
 
-      <div className="glass-morphism rounded-2xl p-5">
-        <h4 className="text-sm font-bold text-slate-200 mb-3 tracking-wide">Tabella di Riferimento ASCII</h4>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs">
-          <div className="text-slate-400">
-            <span className="font-mono">32-47:</span> Simboli
-          </div>
-          <div className="text-slate-400">
-            <span className="font-mono">48-57:</span> Numeri (0-9)
-          </div>
-          <div className="text-slate-400">
-            <span className="font-mono">65-90:</span> Maiuscole (A-Z)
-          </div>
-          <div className="text-slate-400">
-            <span className="font-mono">97-122:</span> Minuscole (a-z)
-          </div>
-        </div>
-      </div>
+      <AsciiTable />
     </div>
   );
 }
