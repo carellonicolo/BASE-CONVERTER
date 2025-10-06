@@ -1,5 +1,7 @@
 import { useState } from 'react';
-import { ChevronDown, ChevronUp, Copy, Check, Search } from 'lucide-react';
+import { ChevronDown, ChevronUp, Copy, Check, Search, Info } from 'lucide-react';
+import CharacterDetailModal from './CharacterDetailModal';
+import { controlCharacterDetails } from '../data/controlCharacterDetails';
 
 interface AsciiChar {
   dec: number;
@@ -176,6 +178,8 @@ function AsciiTable() {
   const [isExpanded, setIsExpanded] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [copiedCell, setCopiedCell] = useState<string | null>(null);
+  const [selectedCharacter, setSelectedCharacter] = useState<AsciiChar | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const copyToClipboard = async (text: string, cellId: string) => {
     try {
@@ -185,6 +189,18 @@ function AsciiTable() {
     } catch (err) {
       console.error('Errore copia:', err);
     }
+  };
+
+  const handleDescriptionClick = (item: AsciiChar) => {
+    if (controlCharacterDetails[item.char]) {
+      setSelectedCharacter(item);
+      setIsModalOpen(true);
+    }
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setTimeout(() => setSelectedCharacter(null), 300);
   };
 
   const filteredData = asciiData.filter((item) => {
@@ -208,7 +224,14 @@ function AsciiTable() {
   }, {} as Record<string, AsciiChar[]>);
 
   return (
-    <div className="glass-morphism rounded-2xl overflow-hidden">
+    <>
+      <CharacterDetailModal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        character={selectedCharacter}
+        details={selectedCharacter ? controlCharacterDetails[selectedCharacter.char] : null}
+      />
+      <div className="glass-morphism rounded-2xl overflow-hidden">
       <button
         onClick={() => setIsExpanded(!isExpanded)}
         className="w-full px-6 py-4 flex items-center justify-between hover:bg-white/5 transition-all duration-300"
@@ -312,7 +335,21 @@ function AsciiTable() {
                               <Copy className="w-3 h-3 text-slate-400 opacity-0 group-hover:opacity-100 absolute right-1 top-1/2 -translate-y-1/2 transition-opacity" />
                             )}
                           </td>
-                          <td className="py-2 px-3 text-slate-300">{item.description}</td>
+                          <td
+                            className={`py-2 px-3 text-slate-300 ${
+                              controlCharacterDetails[item.char]
+                                ? 'cursor-pointer hover:text-liquid-300 hover:bg-white/5 transition-all duration-200 group/desc'
+                                : ''
+                            }`}
+                            onClick={() => controlCharacterDetails[item.char] && handleDescriptionClick(item)}
+                          >
+                            <div className="flex items-center gap-2">
+                              <span>{item.description}</span>
+                              {controlCharacterDetails[item.char] && (
+                                <Info className="w-3.5 h-3.5 text-liquid-400 opacity-0 group-hover/desc:opacity-100 transition-opacity" />
+                              )}
+                            </div>
+                          </td>
                         </tr>
                       ))}
                     </tbody>
@@ -329,7 +366,8 @@ function AsciiTable() {
           )}
         </div>
       )}
-    </div>
+      </div>
+    </>
   );
 }
 
