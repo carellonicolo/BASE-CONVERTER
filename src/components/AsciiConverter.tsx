@@ -60,6 +60,15 @@ function AsciiConverter() {
 
   return (
     <div className="space-y-6">
+      <AsciiTable />
+
+      <div className="flex items-center justify-center py-4">
+        <div className="relative">
+          <div className="absolute inset-0 bg-liquid-400 blur-lg opacity-40"></div>
+          <ArrowRightLeft className="w-6 h-6 text-liquid-300 relative z-10" />
+        </div>
+      </div>
+
       <div className="grid md:grid-cols-2 gap-8">
         <div className="space-y-4">
           <div>
@@ -169,15 +178,6 @@ function AsciiConverter() {
           )}
         </div>
       </div>
-
-      <div className="flex items-center justify-center py-4">
-        <div className="relative">
-          <div className="absolute inset-0 bg-liquid-400 blur-lg opacity-40"></div>
-          <ArrowRightLeft className="w-6 h-6 text-liquid-300 relative z-10" />
-        </div>
-      </div>
-
-      <AsciiTable />
     </div>
   );
 }
