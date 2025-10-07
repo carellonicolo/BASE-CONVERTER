@@ -21,7 +21,7 @@ function App() {
               Base Converter
             </h1>
           </div>
-          <p className="text-slate-300 text-lg font-light">Prof. Carello Nicolò, info@nicolocarello.it</p>
+          <p className="text-slate-300 text-lg font-light">Powered by Prof. Carello Nicolò - info@nicolocarello.it</p>
         </header>
 
         <div className="glass-morphism rounded-3xl shadow-glass-lg overflow-hidden glass-reflection">
