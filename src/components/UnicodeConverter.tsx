@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Sparkles, Copy, Check } from 'lucide-react';
+import UnicodeTable from './UnicodeTable';
 
 function UnicodeConverter() {
   const [textInput, setTextInput] = useState('');
@@ -264,6 +265,8 @@ function UnicodeConverter() {
           </div>
         </div>
       </div>
+
+      <UnicodeTable />
     </div>
   );
 }
