@@ -88,6 +88,8 @@ function UnicodeConverter() {
 
   return (
     <div className="space-y-6">
+      <UnicodeTable />
+
       <div className="grid md:grid-cols-2 gap-8">
         <div className="space-y-4">
           <div>
@@ -265,8 +267,6 @@ function UnicodeConverter() {
           </div>
         </div>
       </div>
-
-      <UnicodeTable />
     </div>
   );
 }
