@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Calculator, Hash, Type, Binary, Gauge } from 'lucide-react';
+import { Calculator, Hash, Type, Binary, Gauge, ExternalLink } from 'lucide-react';
 import BaseConverter from './components/BaseConverter';
 import AsciiConverter from './components/AsciiConverter';
 import UnicodeConverter from './components/UnicodeConverter';
@@ -21,7 +21,16 @@ function App() {
               Base Converter
             </h1>
           </div>
-          <p className="text-slate-300 text-lg font-light">Powered by Prof. Carello Nicolò - info@nicolocarello.it</p>
+          <p className="text-slate-300 text-lg font-light mb-4">Powered by Prof. Carello Nicolò - info@nicolocarello.it</p>
+          <a
+            href="https://app.nicolocarello.it"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 px-6 py-3 glass-morphism rounded-xl text-liquid-300 font-semibold hover:bg-white/10 transition-all duration-300 hover:scale-105 group"
+          >
+            <span>Vai a Tutte le App</span>
+            <ExternalLink className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+          </a>
         </header>
 
         <div className="glass-morphism rounded-3xl shadow-glass-lg overflow-hidden glass-reflection">
